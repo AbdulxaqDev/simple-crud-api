@@ -30,13 +30,13 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
     }
 
     // GET a user
-    
+
     if (method === "GET" && urlLen === 3 && url) {
       if (url[1] == "users" && isValidUUID(url[2])) {
         const userId = url[2];
         console.log(url);
         console.log(userId);
-        
+
         const user = httpGetUser(userId);
         if (user) {
           res.writeHead(200, jsonContentType);
@@ -89,8 +89,8 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
 
     // PUT a user
     if (method === "PUT" && urlLen === 3 && url) {
-      if (url[1] == "user" && isValidUUID(url[2])) {
-        const userId = url[1];
+      if (url[1] == "users" && isValidUUID(url[2])) {
+        const userId = url[2];
         const user = httpGetUser(userId);
         if (user) {
           let user = "";
@@ -109,11 +109,9 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
               };
 
               if (username && !isNaN(age) && Array.isArray(hobbies)) {
-                httpPutUser(updatedUser);
+                const user = httpPutUser(updatedUser);
                 res.writeHead(200, jsonContentType);
-                return res.end(
-                  JSON.stringify({ message: "User updated successfully" })
-                );
+                return res.end(JSON.stringify(user));
               }
               throw new Error("Request does not contain required fields");
             } catch (e: any) {
@@ -138,7 +136,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
     // DELETE a user
     if (method === "DELETE" && urlLen === 3 && url) {
       if (url[1] == "users" && isValidUUID(url[2])) {
-        const userId = url[1];
+        const userId = url[2];
         const user = httpGetUser(userId);
         if (user) {
           removeUser(userId);
@@ -160,7 +158,6 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
   res.writeHead(404, jsonContentType);
   res.end(JSON.stringify({ error: "Not Found!" }));
 });
-
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

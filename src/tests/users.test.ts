@@ -4,6 +4,7 @@ import server from "../index";
 import { getNewUUID } from "../utils/user.util";
 
 describe("Simple-crud-api endpoints", () => {
+  let userIdToTest: string;
   afterAll(() => {
     server.close();
   });
@@ -23,6 +24,7 @@ describe("Simple-crud-api endpoints", () => {
       .post("/api/user")
       .send(newUser)
       .expect(201);
+    userIdToTest = response.body.id;
     delete response.body.id;
     expect(response.body).toEqual(newUser);
   });
@@ -46,21 +48,23 @@ describe("Simple-crud-api endpoints", () => {
     expect(response.body.error).toBe("User Not Found");
   });
 
-  test("DELET user with ID", async () => {
-    const newUser = {
-      username: "TestName",
-      age: 66,
-      hobbies: ["cycling"],
+  test("PUT (update) user with ID", async () => {
+    const updatedUser = {
+      username: "Updated username",
+      age: 23,
+      hobbies: ["updated"],
     };
-    const postedUser = await request(server)
-      .post("/api/user")
-      .send(newUser)
-      .expect(201);
+    const response = await request(server)
+      .put(`/api/users/${userIdToTest}`)
+      .send(updatedUser)
+      .expect(200);
 
-    const postUserId = postedUser.body.id;
-    console.log(postUserId);
-    
+    delete response.body.id;
 
-    await request(server).delete(`/api/users/${postUserId}`).expect(204);
+    expect(response.body).toEqual(updatedUser);
+  });
+
+  test("DELET user with ID", async () => {
+    await request(server).delete(`/api/users/${userIdToTest}`).expect(204);
   });
 });

@@ -23,13 +23,13 @@ export function removeUser(userId: string): boolean {
 }
 
 // PUT (update) user
-export function updateUser(updatedUser: tUser): boolean {
+export function updateUser(updatedUser: tUser): tUser | false {
   const user = isUserExist(updatedUser.id);
   if (!user) return false;
 
   const index = db.indexOf(user);
   db[index] = updatedUser;
-  return true;
+  return db[index];
 }
 
 // GET user
