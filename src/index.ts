@@ -15,82 +15,41 @@ const { PORT } = process.env;
 const jsonContentType = { "Content-Type": "application/json" };
 
 const server = http.createServer(async (req: http.IncomingMessage, res) => {
-  const url = req.url?.split("/").splice(2) as string[] | undefined;
+  const url = req.url?.split("/").splice(1) as string[] | undefined;
   const urlLen = url?.length;
   const method = req.method;
 
-  console.log(method, url);
-
-  // GET all users DONE!
-  if (req.method === "GET" && urlLen === 1 && url) {
-    if (url[0] == "users") {
-      const users = httpGetUsers();
-      res.writeHead(200, jsonContentType);
-      return res.end(JSON.stringify(users));
-    }
-  }
-
-  // GET a user
-  if (req.method === "GET" && urlLen === 2 && url) {
-    if (url[0] == "user" && isValidUUID(url[1])) {
-      const userId = url[1];
-      const user = httpGetUser(userId);
-      if (user) {
+  if (url && url[0] === "api") {
+    // GET all users DONE!
+    if (method === "GET" && urlLen === 2 && url) {
+      if (url[1] == "users") {
+        const users = httpGetUsers();
         res.writeHead(200, jsonContentType);
-        return res.end(JSON.stringify(user));
-      } else {
-        res.writeHead(404, jsonContentType);
-        return res.end(JSON.stringify({ error: "User Not Found" }));
+        return res.end(JSON.stringify(users));
       }
-    } else {
-      res.writeHead(400, jsonContentType);
-      return res.end(JSON.stringify({ error: "Invalid user ID" }));
     }
-  }
 
-  // POST new user
-  if (req.method === "POST" && urlLen === 1 && url) {
-    if (url[0] === "user") {
-      let user = "";
-      req.on("data", (chunk) => {
-        user += chunk.toString();
-      });
-
-      return req.on("end", () => {
-        try {
-          const { username, age, hobbies } = JSON.parse(user);
-
-          if (username && !isNaN(age) && Array.isArray(hobbies)) {
-            const newUser: tUser = {
-              id: getNewUUID(),
-              username,
-              age,
-              hobbies,
-            };
-            console.log(user);
-            const newCreatedUser = httpPostUser(newUser);
-            res.writeHead(201, jsonContentType);
-            return res.end(JSON.stringify(newCreatedUser));
-          }
-          throw new Error("Request does not contain required fields");
-        } catch (e: any) {
-          res.writeHead(400, jsonContentType);
-          return res.end(
-            JSON.stringify({
-              error: e.message,
-            })
-          );
+    // GET a user
+    if (method === "GET" && urlLen === 3 && url) {
+      if (url[1] == "user" && isValidUUID(url[1])) {
+        const userId = url[1];
+        const user = httpGetUser(userId);
+        if (user) {
+          res.writeHead(200, jsonContentType);
+          return res.end(JSON.stringify(user));
+        } else {
+          res.writeHead(404, jsonContentType);
+          return res.end(JSON.stringify({ error: "User Not Found" }));
         }
-      });
+      } else {
+        res.writeHead(400, jsonContentType);
+        return res.end(JSON.stringify({ error: "Invalid user ID" }));
+      }
     }
-  }
 
-  // PUT a user
-  if (req.method === "PUT" && urlLen === 2 && url) {
-    if (url[0] == "user" && isValidUUID(url[1])) {
-      const userId = url[1];
-      const user = httpGetUser(userId);
-      if (user) {
+    // POST new user
+    if (method === "POST" && urlLen === 2 && url) {
+      if (url[1] === "user") {
         let user = "";
         req.on("data", (chunk) => {
           user += chunk.toString();
@@ -99,19 +58,18 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
         return req.on("end", () => {
           try {
             const { username, age, hobbies } = JSON.parse(user);
-            const updatedUser = {
-              id: userId,
-              username,
-              age,
-              hobbies,
-            };
 
             if (username && !isNaN(age) && Array.isArray(hobbies)) {
-              httpPutUser(updatedUser);
-              res.writeHead(200, jsonContentType);
-              return res.end(
-                JSON.stringify({ message: "User updated successfully" })
-              );
+              const newUser: tUser = {
+                id: getNewUUID(),
+                username,
+                age,
+                hobbies,
+              };
+              console.log(user);
+              const newCreatedUser = httpPostUser(newUser);
+              res.writeHead(201, jsonContentType);
+              return res.end(JSON.stringify(newCreatedUser));
             }
             throw new Error("Request does not contain required fields");
           } catch (e: any) {
@@ -123,34 +81,76 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
             );
           }
         });
-      } else {
-        res.writeHead(404, jsonContentType);
-        return res.end(JSON.stringify({ error: "User Not Found" }));
       }
-    } else {
-      res.writeHead(400, jsonContentType);
-      return res.end(JSON.stringify({ error: "Invalid user ID" }));
     }
-  }
 
-  // DELETE a user
-  if (req.method === "DELETE" && urlLen === 2 && url) {
-    if (url[0] == "user" && isValidUUID(url[1])) {
-      const userId = url[1];
-      const user = httpGetUser(userId);
-      if (user) {
-        removeUser(userId);
-        res.writeHead(204, jsonContentType);
-        return res.end(
-          JSON.stringify({ message: "User removed successfully" })
-        );
+    // PUT a user
+    if (method === "PUT" && urlLen === 3 && url) {
+      if (url[1] == "user" && isValidUUID(url[1])) {
+        const userId = url[1];
+        const user = httpGetUser(userId);
+        if (user) {
+          let user = "";
+          req.on("data", (chunk) => {
+            user += chunk.toString();
+          });
+
+          return req.on("end", () => {
+            try {
+              const { username, age, hobbies } = JSON.parse(user);
+              const updatedUser = {
+                id: userId,
+                username,
+                age,
+                hobbies,
+              };
+
+              if (username && !isNaN(age) && Array.isArray(hobbies)) {
+                httpPutUser(updatedUser);
+                res.writeHead(200, jsonContentType);
+                return res.end(
+                  JSON.stringify({ message: "User updated successfully" })
+                );
+              }
+              throw new Error("Request does not contain required fields");
+            } catch (e: any) {
+              res.writeHead(400, jsonContentType);
+              return res.end(
+                JSON.stringify({
+                  error: e.message,
+                })
+              );
+            }
+          });
+        } else {
+          res.writeHead(404, jsonContentType);
+          return res.end(JSON.stringify({ error: "User Not Found" }));
+        }
       } else {
-        res.writeHead(404, jsonContentType);
-        return res.end(JSON.stringify({ error: "User Not Found" }));
+        res.writeHead(400, jsonContentType);
+        return res.end(JSON.stringify({ error: "Invalid user ID" }));
       }
-    } else {
-      res.writeHead(400, jsonContentType);
-      return res.end(JSON.stringify({ error: "Invalid user ID" }));
+    }
+
+    // DELETE a user
+    if (method === "DELETE" && urlLen === 3 && url) {
+      if (url[1] == "user" && isValidUUID(url[1])) {
+        const userId = url[1];
+        const user = httpGetUser(userId);
+        if (user) {
+          removeUser(userId);
+          res.writeHead(204, jsonContentType);
+          return res.end(
+            JSON.stringify({ message: "User removed successfully" })
+          );
+        } else {
+          res.writeHead(404, jsonContentType);
+          return res.end(JSON.stringify({ error: "User Not Found" }));
+        }
+      } else {
+        res.writeHead(400, jsonContentType);
+        return res.end(JSON.stringify({ error: "Invalid user ID" }));
+      }
     }
   }
 
@@ -161,3 +161,5 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+export default server;
