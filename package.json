@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "start": "node public/bundle.js",
+    "start": "node public/bundle.cjs",
     "start:dev": "ts-node-dev src",
     "start:multi": "",
     "start:prod": "npm run build && npm run start"

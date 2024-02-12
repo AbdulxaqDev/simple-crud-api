@@ -19,9 +19,10 @@ const config = {
   },
   target: "node",
   output: {
-    filename: "bundle.js",
+    filename: "bundle.cjs",
     clean: true,
     path: path.resolve(__dirname, "public"),
+    chunkFormat: "commonjs",
   },
 };
 
