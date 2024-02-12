@@ -153,6 +153,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
     }
   }
 
+  
   res.writeHead(404, jsonContentType);
   res.end(JSON.stringify({ error: "Not Found!" }));
 });

@@ -1,7 +1,6 @@
 import request from "supertest";
 
 import server from "../index";
-import { getNewUUID } from "../utils/user.util";
 
 describe("Simple-crud-api endpoints", () => {
   let userIdToTest: string;
