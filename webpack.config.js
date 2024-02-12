@@ -11,6 +11,7 @@ const config = {
       {
         test: /\.ts$/i,
         use: "ts-loader",
+        exclude: path.resolve(__dirname, "node_modules"),
       },
     ],
   },
