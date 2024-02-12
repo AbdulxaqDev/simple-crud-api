@@ -34,8 +34,6 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
     if (method === "GET" && urlLen === 3 && url) {
       if (url[1] == "users" && isValidUUID(url[2])) {
         const userId = url[2];
-        console.log(url);
-        console.log(userId);
 
         const user = httpGetUser(userId);
         if (user) {
