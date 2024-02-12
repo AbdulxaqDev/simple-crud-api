@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "test": "jest --detectOpenHandles",
+    "test": "jest",
     "build": "webpack",
     "start": "node public/bundle.cjs",
     "start:dev": "ts-node-dev src",
