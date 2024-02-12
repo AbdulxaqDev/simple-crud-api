@@ -30,9 +30,13 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
     }
 
     // GET a user
+    
     if (method === "GET" && urlLen === 3 && url) {
-      if (url[1] == "user" && isValidUUID(url[1])) {
-        const userId = url[1];
+      if (url[1] == "users" && isValidUUID(url[2])) {
+        const userId = url[2];
+        console.log(url);
+        console.log(userId);
+        
         const user = httpGetUser(userId);
         if (user) {
           res.writeHead(200, jsonContentType);
@@ -66,7 +70,6 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
                 age,
                 hobbies,
               };
-              console.log(user);
               const newCreatedUser = httpPostUser(newUser);
               res.writeHead(201, jsonContentType);
               return res.end(JSON.stringify(newCreatedUser));
@@ -86,7 +89,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
 
     // PUT a user
     if (method === "PUT" && urlLen === 3 && url) {
-      if (url[1] == "user" && isValidUUID(url[1])) {
+      if (url[1] == "user" && isValidUUID(url[2])) {
         const userId = url[1];
         const user = httpGetUser(userId);
         if (user) {
@@ -134,7 +137,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
 
     // DELETE a user
     if (method === "DELETE" && urlLen === 3 && url) {
-      if (url[1] == "user" && isValidUUID(url[1])) {
+      if (url[1] == "users" && isValidUUID(url[2])) {
         const userId = url[1];
         const user = httpGetUser(userId);
         if (user) {
@@ -157,6 +160,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res) => {
   res.writeHead(404, jsonContentType);
   res.end(JSON.stringify({ error: "Not Found!" }));
 });
+
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
