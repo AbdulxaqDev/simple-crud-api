@@ -1,0 +1,116 @@
+{
+	"info": {
+		"_postman_id": "d218e906-565f-4c6a-a850-7cb641e37c7e",
+		"name": "simple-crud-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21518519"
+	},
+	"item": [
+		{
+			"name": "GET/users/id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/184333bc-57b6-41ba-9984-c540ee176069",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"184333bc-57b6-41ba-9984-c540ee176069"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DEL/users/id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/d8c160e5-7cb1-43dd-81d9-f2d25fd02d1e",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"d8c160e5-7cb1-43dd-81d9-f2d25fd02d1e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET/users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT/user/id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"Jane Updaddddfrrrrrrrfrfrfrfrftes\",\n    \"age\": 3,\n    \"hobbies\": [\"gaming\", \"cooking\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/dd543c01-eeb2-4fd6-b2e4-c8c93cd39b64",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"dd543c01-eeb2-4fd6-b2e4-c8c93cd39b64"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST/user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"sssssssss\",\n    \"age\": 30,\n    \"hobbies\": []\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
