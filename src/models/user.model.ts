@@ -1,15 +1,15 @@
-import db from "src/db";
-import { isUserExist } from "src/utils/user.util";
+import db from "../db";
+import { isUserExist } from "../utils/user.util";
 
 import { tUser } from "src/types/user";
 
 // POST user
-export function addUser(newUser: tUser): boolean {
+export function addUser(newUser: tUser): tUser | false {
   const user = isUserExist(newUser.id);
   if (user) return false;
 
   db.push(newUser);
-  return true;
+  return newUser;
 }
 
 // DELETE user
